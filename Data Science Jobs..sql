@@ -1,5 +1,3 @@
-use campusx;
-
 
 /*1.You're a Compensation analyst employed by a multinational corporation. Your Assignment is to Pinpoint Countries who give work fully remotely, for the title
  'managers’ Paying salaries Exceeding $90,000 USD*/
@@ -150,54 +148,4 @@ FROM
 	FROM  t GROUP BY experience_level , job_title -- step 2
 )a WHERE (((AVG_salary_2024-AVG_salary_2023)/AVG_salary_2023)*100)  IS NOT NULL -- STEP 3
 
-
-
-
- 
-/* 9. You're a database administrator tasked with role-based access control for a company's employee database. Your goal is to implement a security measure where employees
- in different experience level (e.g.Entry Level, Senior level etc.) can only access details relevant to their respective experience_level, ensuring data 
- confidentiality and minimizing the risk of unauthorized access.*/
- select * from salaries
- select distinct experience_level from salaries
- Show privileges
- 
-
-
-CREATE USER 'Entry_level'@'%' IDENTIFIED BY 'EN';
-CREATE USER 'Junior_Mid_level'@'%' IDENTIFIED BY ' MI '; 
-CREATE USER 'Intermediate_Senior_level'@'%' IDENTIFIED BY 'SE';
-CREATE USER 'Expert Executive-level '@'%' IDENTIFIED BY 'EX ';
-
-
-CREATE VIEW entry_level AS
-SELECT * FROM salaries where experience_level='EN'
-
-GRANT SELECT ON campusx.entry_level TO 'Entry_level'@'%'
-
-UPDATE view entry_level set WORK_YEAR = 2025 WHERE EMPLOYNMENT_TYPE='FT'
-
-
-
-
-/* 10.	You are working with an consultancy firm, your client comes to you with certain data and preferences such as 
-( their year of experience , their employment type, company location and company size )  and want to make an transaction into different domain in data industry
-(like  a person is working as a data analyst and want to move to some other domain such as data science or data engineering etc.)
-your work is to  guide them to which domain they should switch to base on  the input they provided, so that they can now update thier knowledge as  per the suggestion/.. 
-The Suggestion should be based on average salary.*/
-
-DELIMITER //
-create PROCEDURE GetAverageSalary(IN exp_lev VARCHAR(2), IN emp_type VARCHAR(3), IN comp_loc VARCHAR(2), IN comp_size VARCHAR(2))
-BEGIN
-    SELECT job_title, experience_level, company_location, company_size, employment_type, ROUND(AVG(salary), 2) AS avg_salary 
-    FROM salaries 
-    WHERE experience_level = exp_lev AND company_location = comp_loc AND company_size = comp_size AND employment_type = emp_type 
-    GROUP BY experience_level, employment_type, company_location, company_size, job_title order by avg_salary desc ;
-END//
-DELIMITER ;
--- Deliminator  By doing this, you're telling MySQL that statements within the block should be parsed as a single unit until the custom delimiter is encountered.
-
-call GetAverageSalary('EN','FT','AU','M')
-
-
-drop procedure Getaveragesalary
 
